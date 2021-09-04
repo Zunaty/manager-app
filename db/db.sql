@@ -1,3 +1,4 @@
-DROP DATABASE IF EXISTS manager;
-CREATE DATABASE manager;
-USE manager;
+DROP DATABASE IF EXISTS manager_db;
+CREATE DATABASE manager_db;
+
+USE manager_db;
