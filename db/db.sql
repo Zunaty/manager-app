@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS manager;
+CREATE DATABASE manager;
+USE manager;
