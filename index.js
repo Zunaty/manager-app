@@ -95,8 +95,11 @@ const promptUser = () => {
 
         // Adding a role to the roles table
         } else if (listChoice === 'Add a role') {
+
+            // This array will hold the department names currently in the department table
             const roleChoices = [];
 
+            // Grabing the department names and pushing into the array
             db.query('SELECT name FROM department', (err, results) => {
                 for(let i = 0; i < results.length; i++) {
                     roleChoices.push(results[i].name);
@@ -105,6 +108,7 @@ const promptUser = () => {
 
             wait();
 
+            // Asking for role requirements
             return inquirer.prompt([
                 {
                     type: 'input',
@@ -150,9 +154,65 @@ const promptUser = () => {
                 waitPrompt();
             });
 
-        
-        } else if (listChoice === 'Add a employee') {
+        // Adding an employee
+        } else if (listChoice === 'Add an employee') {
 
+            // This array will hold the role table titles
+            const employeeChoices = [];
+
+            // Grabing titles from the roles table and pushing to array
+            db.query('SELECT title FROM roles', (err, results) => {
+                for(let i = 0; i < results.length; i++) {
+                    employeeChoices.push(results[i].title);
+                };
+            });
+
+            wait();
+
+            return inquirer.prompt([
+                {
+                    type: 'input',
+                    message: 'What is the employees first name?',
+                    name: 'firstName',
+                    validate: firstNameInput => {
+                        if(firstNameInput) {
+                            return true;
+                        } else {
+                            console.log('Please enter employees first name!');
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'input',
+                    message: 'What is the employees last name?',
+                    name: 'lastName',
+                    validate: lastNameInput => {
+                        if(lastNameInput) {
+                            return true;
+                        } else {
+                            console.log('Please enter employees last name!');
+                            return false;
+                        }
+                    }
+                },
+                {
+                    type: 'list',
+                    message: 'What role is the employee?',
+                    name: 'emChoice',
+                    choices: employeeChoices
+                }
+            ]).then((data) => {
+                const emRoleID = employeeChoices.indexOf(data.emChoice, 0) + 1;
+                db.query(`INSERT INTO employee (first_name, last_name, role_id) VALUES ("${data.firstName}", "${data.lastName}", ${emRoleID});`, (err, result) => {});
+
+                wait();
+
+                employeeView();
+                waitPrompt();
+            });
+
+        // Update the employees role
         } else if (listChoice === 'Update an employee role') {
 
         } else if (listChoice === 'Done') {
